@@ -57,6 +57,12 @@ export default function App() {
         setSelectedId(null);
     }
 
+    useEffect(function () {
+        if (query.length > 3) {
+            setSelectedId(null);
+        }
+    }, [query]);
+
     function handleAddWatched(movie) {
         setWatched(watched => [...watched, movie]);
     }
@@ -66,22 +72,27 @@ export default function App() {
     }
 
     useEffect(function () {
+        const controller = new AbortController();
+
         async function getMovies() {
             try {
                 setIsLoading(true);
-                setError('')
-                const res = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`)
+                setError('');
+                const res = await fetch(
+                    `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+                    { signal: controller.signal }
+                );
 
                 if (!res.ok) throw new Error("Something went wrong with fetching movies");
 
                 const data = await res.json();
 
-                if (data.Response === "False") {
-                    throw new Error("Movie not found");
-                }
+                if (data.Response === "False") throw new Error("Movie not found");
 
                 setMovies(data.Search);
+                setError('');
             } catch (err) {
+                if (err.name === "AbortError") return;
                 setError(err.message);
             } finally {
                 setIsLoading(false);
@@ -89,12 +100,16 @@ export default function App() {
         }
 
         if (query.length <= 3) {
-            setMovies([])
-            setError('')
+            setMovies([]);
+            setError('');
             return;
         }
 
         getMovies();
+
+        return function () {
+            controller.abort();
+        };
     }, [query])
 
 
@@ -156,6 +171,27 @@ function SelectedMovie({selectedId, handleCloseSelectedMovie, onAddWatched, watc
         Director: director,
         Genre: genre,
     } = movie;
+
+    useEffect(function () {
+        if (!title) return;
+        document.title = `Movie | ${title}`;
+
+        return function () {
+            document.title = "usePopcorn";
+        }
+    }, [title])
+
+    useEffect(function () {
+        function callback(e) {
+            if (e.code === "Escape") {
+                handleCloseSelectedMovie();
+            }
+        }
+        document.addEventListener("keydown", callback);
+        return function () {
+            document.removeEventListener("keydown", callback);
+        };
+    }, [handleCloseSelectedMovie])
 
     function handleAdd() {
         const newWatchedMovie = {
@@ -322,15 +358,15 @@ function Summary({watched}) {
             </p>
             <p>
                 <span>⭐️</span>
-                <span>{avgImdbRating}</span>
+                <span>{avgImdbRating.toFixed(2)}</span>
             </p>
             <p>
                 <span>🌟</span>
-                <span>{avgUserRating}</span>
+                <span>{avgUserRating.toFixed(2)}</span>
             </p>
             <p>
                 <span>⏳</span>
-                <span>{avgRuntime} min</span>
+                <span>{avgRuntime.toFixed(2)} min</span>
             </p>
         </div>
     </div>
