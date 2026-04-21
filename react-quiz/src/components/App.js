@@ -8,7 +8,9 @@ import {Question} from "./Question";
 
 const initialState = {
     questions: [],
-    status: "loading"
+    status: "loading",
+    index: 0,
+    answer: null,
 }
 
 function reducer(state, action) {
@@ -22,6 +24,9 @@ function reducer(state, action) {
         case "start": {
             return {...state, status: "active"};
         }
+        case "newAnswer": {
+            return {...state, answer: action.payload};
+        }
         default: {
             throw new Error("Unknown action type");
         }
@@ -30,6 +35,7 @@ function reducer(state, action) {
 
 export default function App() {
     const [state, dispatch] = useReducer(reducer, initialState);
+    const currentQuestion = state.questions[state.index];
 
     useEffect(function () {
         fetch("http://localhost:9000/questions")
@@ -46,7 +52,7 @@ export default function App() {
                 {state.status === "loading" && <Loader />}
                 {state.status === "error" && <Error />}
                 {state.status === "ready" && <StartScreen numberQuestions={state.questions.length} onStart={dispatch}/>}
-                {state.status === "active" && <Question />}
+                {state.status === "active" && <Question question={currentQuestion} dispatch={dispatch}/>}
             </Main>
         </div>
     )
