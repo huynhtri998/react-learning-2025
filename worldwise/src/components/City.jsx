@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./City.module.css";
 import Spinner from "./Spinner.jsx";
 import { emojiToCountryCode } from "./CityItem.jsx";
 import Button from "./Button.jsx";
-
-const BASE_URL = "http://localhost:9000";
+import { useCities } from "../contexts/CitiesContext.jsx";
 
 function formatDate(date) {
     return new Intl.DateTimeFormat("en", {
@@ -19,29 +18,16 @@ function formatDate(date) {
 export default function City() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [city, setCity] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const { currentCity, getCity, isLoading } = useCities();
 
     useEffect(function () {
-        async function fetchCity() {
-            try {
-                setIsLoading(true);
-                const res = await fetch(`${BASE_URL}/cities/${id}`);
-                const data = await res.json();
-                setCity(data);
-            } catch (err) {
-                console.error("Error fetching city:", err);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-        fetchCity();
+        getCity(id);
     }, [id]);
 
     if (isLoading) return <Spinner />;
-    if (!city) return null;
+    if (!currentCity.id) return null;
 
-    const { cityName, emoji, date, notes } = city;
+    const { cityName, emoji, date, notes } = currentCity;
     const countryCode = emojiToCountryCode(emoji);
 
     return (

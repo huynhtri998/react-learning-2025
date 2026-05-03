@@ -1,8 +1,10 @@
 import styles from "./Countries.module.css";
 import Spinner from "./Spinner.jsx";
 import CountryItem from "./CountryItem.jsx";
+import { useCities } from "../contexts/CitiesContext.jsx";
 
-export default function Countries({ cities, isLoading }) {
+export default function Countries() {
+    const { cities, isLoading } = useCities();
     if (isLoading) return <Spinner />;
 
     const countries = cities.reduce((acc, city) => {
