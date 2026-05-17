@@ -10,17 +10,20 @@ import Countries from "./components/Countries.jsx";
 import Form from "./components/Form.jsx";
 import City from "./components/City.jsx";
 import { CitiesProvider } from "./contexts/CitiesContext.jsx";
+import { AuthProvider } from "./contexts/FakeAuthContext.jsx";
+import ProtectedRoute from "./pages/ProtectedRoute.jsx";
 
 export default function App() {
     return (
-        <CitiesProvider>
+    <AuthProvider>
+      <CitiesProvider>
             <BrowserRouter>
                 <Routes>
                     <Route index element={<Homepage />} />
                     <Route path="/pricing" element={<Pricing />} />
                     <Route path="/product" element={<Product />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/app" element={<AppLayout />}>
+                    <Route path="/app" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
                         <Route index element={<Navigate replace to="/app/cities" />} />
                         <Route path="cities" element={<Cities />} />
                         <Route path="cities/:id" element={<City />} />
@@ -30,6 +33,7 @@ export default function App() {
                     <Route path="*" element={<PageNotFound />} />
                 </Routes>
             </BrowserRouter>
-        </CitiesProvider>
+      </CitiesProvider>
+    </AuthProvider>
     );
 }
