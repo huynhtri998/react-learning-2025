@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { faker } from "@faker-js/faker";
 import { PostProvider, usePosts } from "./PostContext";
 
@@ -29,10 +29,10 @@ function App() {
           {isFakeDark ? "☀️" : "🌙"}
         </button>
 
-        <Header />
-        <Main />
-        <Archive />
-        <Footer />
+        <HeaderMemo />
+        <MainMemo />
+        <ArchiveMemo />
+        <FooterMemo />
       </section>
     </PostProvider>
   );
@@ -54,6 +54,8 @@ function Header() {
     </header>
   );
 }
+
+const HeaderMemo = memo(Header);
 
 function SearchPosts() {
   const { searchQuery, setSearchQuery } = usePosts();
@@ -81,6 +83,8 @@ function Main() {
     </main>
   );
 }
+
+const MainMemo = memo(Main);
 
 function Posts() {
   return (
@@ -168,8 +172,12 @@ function Archive() {
   );
 }
 
+const ArchiveMemo = memo(Archive);
+
 function Footer() {
   return <footer>&copy; by The Atomic Blog ✌️</footer>;
 }
+
+const FooterMemo = memo(Footer);
 
 export default App;

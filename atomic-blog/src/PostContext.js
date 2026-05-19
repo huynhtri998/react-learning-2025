@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useMemo } from "react";
 import { faker } from "@faker-js/faker";
 
 function createRandomPost() {
@@ -35,16 +35,21 @@ function PostProvider({ children }) {
     setPosts([]);
   }
 
+  // OPTIMIZATION: Memoize the context value object to prevent unnecessary re-renders
+  // when parent component (App) re-renders due to unrelated state changes (like isFakeDark)
+  const value = useMemo(
+    () => ({
+      posts: searchedPosts,
+      onAddPost: handleAddPost,
+      onClearPosts: handleClearPosts,
+      searchQuery,
+      setSearchQuery,
+    }),
+    [searchedPosts, searchQuery]
+  );
+
   return (
-    <PostContext.Provider
-      value={{
-        posts: searchedPosts,
-        onAddPost: handleAddPost,
-        onClearPosts: handleClearPosts,
-        searchQuery,
-        setSearchQuery,
-      }}
-    >
+    <PostContext.Provider value={value}>
       {children}
     </PostContext.Provider>
   );
