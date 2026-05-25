@@ -22,7 +22,7 @@ export default function City() {
 
     useEffect(function () {
         getCity(id);
-    }, [id]);
+    }, [id, getCity]);
 
     if (isLoading) return <Spinner />;
     if (!currentCity.id) return null;
