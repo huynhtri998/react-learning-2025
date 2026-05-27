@@ -40,3 +40,7 @@ npm run dev
 
 - React + Vite
 - Feature-based architecture
+
+## Routes
+
+- `/` - Homepage

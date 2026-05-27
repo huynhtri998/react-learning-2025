@@ -1,3 +1,5 @@
+import {formatCurrency} from "../../utils/helpers.js";
+
 function CartItem({ item }) {
   const { pizzaId, name, quantity, totalPrice } = item;
 
