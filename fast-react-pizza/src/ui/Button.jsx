@@ -19,8 +19,15 @@ function Button({ children, disabled, to, type, onClick }) {
       </Link>
     );
 
+  if (onClick)
+    return (
+      <button onClick={onClick} disabled={disabled} className={styles[type]}>
+        {children}
+      </button>
+    );
+
   return (
-    <button onClick={onClick} disabled={disabled} className={styles[type]}>
+    <button disabled={disabled} className={styles[type]}>
       {children}
     </button>
   );
@@ -30,7 +37,7 @@ Button.propTypes = {
   children: PropTypes.node.isRequired,
   disabled: PropTypes.bool,
   to: PropTypes.string,
-  type: PropTypes.oneOf(['primary', 'small', 'secondary']).isRequired,
+  type: PropTypes.oneOf(['primary', 'small', 'round', 'secondary']).isRequired,
   onClick: PropTypes.func,
 };
 

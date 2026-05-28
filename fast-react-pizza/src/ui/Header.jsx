@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import SearchOrder from '../features/order/SearchOrder';
 import Username from '../features/user/Username';
+import LastOrder from '../features/order/LastOrder';
 
 function Header() {
   return (
@@ -9,7 +10,10 @@ function Header() {
         Fast React Pizza Co.
       </Link>
 
-      <SearchOrder />
+      <div className="flex items-center gap-4">
+        <LastOrder />
+        <SearchOrder />
+      </div>
       <Username />
     </header>
   );
