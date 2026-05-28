@@ -13,13 +13,11 @@ function Order() {
 
   // Everyone can search for all orders, so for privacy reasons we're gonna gonna exclude names or address, these are only for the restaurant staff
   const {
-    id,
     status,
     priority,
     priorityPrice,
     orderPrice,
     estimatedDelivery,
-    cart,
   } = order;
   const deliveryIn = calcMinutesLeft(estimatedDelivery);
 
@@ -52,6 +50,7 @@ function Order() {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function loader({ params }) {
   const order = await getOrder(params.orderId);
   return order;
